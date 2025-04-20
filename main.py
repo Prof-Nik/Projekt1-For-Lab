@@ -72,6 +72,46 @@ def main():
     pdf_parser.add_argument('input', help='Путь к PDF файлу')
     pdf_parser.add_argument('output_dir', help='Путь к выходной директории')
     args = parser.parse_args()
+    while True:  # Добавляем бесконечный цикл
+        try:
+            user_input = input("Введите команду (или 'help' для помощи, 'exit' для выхода): ")
+            if user_input.lower() == 'exit':
+                break
+            elif user_input.lower() == 'help':
+                parser.print_help()
+                continue
+            args = parser.parse_args(user_input.split())
+            if args.command == 'convert':
+                input_path = args.input
+                output_path = args.output
+                output_format = args.format
+                if input_path.lower().endswith(
+                        ('.jpg', '.png', '.jpeg', '.bmp')):  # Поддержка различных расширений изображений
+                    convert_image(input_path, output_path, output_format)
+                elif input_path.lower().endswith('.txt'):
+                    convert_text(input_path, output_path, output_format)
+                elif input_path.lower().endswith('.docx'):
+                    convert_docx(input_path, output_path)
+                else:
+                    print("Неподдерживаемый формат файла.")
+            elif args.command == 'batch':
+                input_dir = args.input_dir
+                output_dir = args.output_dir
+                input_format = args.input_format
+                output_format = args.output_format
+                batch_convert(input_dir, output_dir, input_format, output_format)
+            elif args.command == 'pdf2img':
+                convert_pdf_to_image(args.input, args.output_dir)
+            else:
+                parser.print_help()
 
+        except SystemExit:  # Обрабатываем SystemExit, чтобы цикл не прерывался
+            pass
+        except Exception as e:  # Перехватываем другие возможные ошибки
+            print(f"Произошла ошибка: {e}")
+
+        choice = input("Выполнить еще одну операцию? (да/нет): ").lower()
+        if choice != 'да':
+            break
 if __name__ == "__main__":
     main()
