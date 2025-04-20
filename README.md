@@ -50,7 +50,12 @@ python converter.py help
 
 ## Скриншоты работы программы
 ![изображение](https://github.com/user-attachments/assets/002f2ca4-f56f-44b3-b193-e4868f48c175)
+
 ![изображение](https://github.com/user-attachments/assets/e043c5b4-f31d-4fdf-9f5c-066bc8b7d21c)
+
+![изображение](https://github.com/user-attachments/assets/3580d77f-8184-49a9-95bc-78067e88e3f2)
+
+![изображение](https://github.com/user-attachments/assets/f28db7fa-397d-4f02-b934-377d40af22c4)
 
 
 ## Технологии
