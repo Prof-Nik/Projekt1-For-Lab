@@ -54,7 +54,24 @@ def batch_convert(input_dir, output_dir, input_format, output_format):
                     convert_docx(input_path, output_path)
             except Exception as e:
                 print(f"Ошибка при конвертации файла '{input_path}': {e}")
-
+def main():
+    parser = argparse.ArgumentParser(description="Конвертер файлов")
+    subparsers = parser.add_subparsers(dest='command', help='Выберите команду')
+    # Парсер для одиночной конвертации
+    convert_parser = subparsers.add_parser('convert', help='Конвертировать один файл')
+    convert_parser.add_argument('input', help='Путь к входному файлу')
+    convert_parser.add_argument('output', help='Путь к выходному файлу')
+    convert_parser.add_argument('-f', '--format', help='Формат выходного файла (для изображений)')
+    # Парсер для пакетной конвертации
+    batch_parser = subparsers.add_parser('batch', help='Пакетная конвертация')
+    batch_parser.add_argument('input_dir', help='Путь к входной директории')
+    batch_parser.add_argument('output_dir', help='Путь к выходной директории')
+    batch_parser.add_argument('input_format', help='Входной формат файлов (например, jpg, png, txt, docx)')
+    batch_parser.add_argument('output_format', help='Выходной формат файлов (например, jpg, png, txt)')
+    pdf_parser = subparsers.add_parser('pdf2img', help='Конвертировать PDF в изображения')
+    pdf_parser.add_argument('input', help='Путь к PDF файлу')
+    pdf_parser.add_argument('output_dir', help='Путь к выходной директории')
+    args = parser.parse_args()
 
 if __name__ == "__main__":
     main()
