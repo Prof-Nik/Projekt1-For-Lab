@@ -20,27 +20,37 @@ pip install Pillow python-docx pdf2image docx2txt
 python converter.py convert <путь к входному файлу> <путь к выходному файлу> [-f <формат выходного файла (для изображений)>]
 
 Примеры:
+
 python converter.py convert input.jpg output.png -f PNG
+
 python converter.py convert input.txt output.txt
+
 python converter.py convert input.docx output.txt
 
 * **`batch`**: Пакетная конвертация.
 python converter.py batch <путь к входной директории> <путь к выходной директории> <входной формат> <выходной формат>
 
 Примеры:
+
 python converter.py batch ./input_images ./output_images jpg png 
+
 python converter.py batch ./input_texts ./output_texts txt txt
 
 * **`pdf2img`**: Конвертация PDF в изображения.
 python converter.py pdf2img <путь к PDF файлу> <путь к выходной директории>
 
 Пример:
+
 python converter.py pdf2img input.pdf output_images
 
 * **`help`**: Вывод справки по командам.
 python converter.py help
 
 * **`exit`**: Выход из программы (вводится после запуска внутри приложения).
+
+## Скриншоты работы программы
+![изображение](https://github.com/user-attachments/assets/002f2ca4-f56f-44b3-b193-e4868f48c175)
+![изображение](https://github.com/user-attachments/assets/e043c5b4-f31d-4fdf-9f5c-066bc8b7d21c)
 
 
 ## Технологии
