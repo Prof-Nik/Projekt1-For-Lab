@@ -38,6 +38,8 @@ jobs:
     - name: Run tests with coverage
       run: |
         coverage run -m pytest
+        coverage report -m
+        coverage html # Генерируем HTML отчет
       # Если вы хотите, чтобы workflow упал при низком покрытии:
       # coverage run -m pytest && coverage report --fail-under=85
 
