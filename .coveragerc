@@ -1,0 +1,22 @@
+[run]
+source = main
+omit =
+    */__main__.py   # Если у вас есть if __name__ == "__main__": для запуска
+    */tests/*       # Не включать тесты в покрытие
+    */venv/*        # Не включать виртуальное окружение
+    */.venv/*
+
+[report]
+
+show_missing = True
+
+exclude_lines =
+    pragma: no cover
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    def __repr__
+    if self.debug:
+    except Exception as e:
+
+[html]
+directory = htmlcov
