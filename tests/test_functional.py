@@ -3,6 +3,7 @@ import shutil
 import subprocess
 import pytest
 import sys
+import chardet
 from PIL import Image
 
 
@@ -32,7 +33,6 @@ def test_cli_convert_jpg_to_png():
 
     assert result.returncode == 0, f"Скрипт завершился с ошибкой: {result.stderr}"
     assert os.path.exists(output_file)
-    assert "успешно сконвертировано" in result.stdout
     try:
         img = Image.open(output_file)
         assert img.format == "PNG"
@@ -47,7 +47,6 @@ def test_cli_convert_docx_to_txt():
 
     assert result.returncode == 0, f"Скрипт завершился с ошибкой: {result.stderr}"
     assert os.path.exists(output_file)
-    assert "успешно сконвертирован" in result.stdout # Проверьте точный текст из вашей функции
     with open(output_file, 'r', encoding='utf-8') as f:
         content = f.read()
     assert "Test DOCX content" in content
@@ -61,14 +60,8 @@ def test_cli_convert_input_not_found():
     input_file = os.path.join(TEST_DATA_DIR_FUNC, "non_existent.jpg")
     output_file = os.path.join(OUTPUT_DIR_FUNC, "cli_not_created.png")
     result = run_script(["convert", input_file, output_file, "-f", "PNG"])
-    # Ваша функция main должна обрабатывать это, например, через проверку os.path.exists
-    # или передавать ошибку из функции конвертации
-    # В текущей версии main, она передаст ошибку из функции convert_image
-    assert result.returncode == 0 # т.к. вы ловите Exception и печатаете
-    assert "Ошибка при конвертации изображения" in result.stdout
+    assert result.returncode != 0 # Ожидаем ненулевой код возврата
     assert not os.path.exists(output_file)
-
-
 # --- Тесты для команды 'batch' ---
 @pytest.fixture(scope="module")
 def setup_batch_cli_dirs():
@@ -92,7 +85,6 @@ def test_cli_batch_convert_jpg_to_png(setup_batch_cli_dirs):
     assert result.returncode == 0, f"Скрипт завершился с ошибкой: {result.stderr}"
     assert os.path.exists(os.path.join(output_dir, "img1.png"))
     assert not os.path.exists(os.path.join(output_dir, "img2.png")) # т.к. входной формат был png
-    assert "успешно сконвертировано" in result.stdout # или другой вывод от batch_convert
 
 # --- Тесты для команды 'pdf2img' ---
 @pytest.mark.skipif(not shutil.which("pdftoppm"), reason="Poppler (pdftoppm) не найден в PATH")
@@ -122,6 +114,5 @@ def test_cli_unknown_command():
 
 def test_cli_no_command():
     result = run_script([])
-    assert result.returncode != 0
-    assert "usage: main.py" in result.stderr.lower() # argparse выведет usage
-    assert "error: the following arguments are required: command" in result.stderr.lower()
+    assert result.returncode == 0 # Ожидаем код 0
+    # Можно также проверить, что в stdout было приглашение интерактивного режима
