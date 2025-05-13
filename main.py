@@ -4,6 +4,7 @@ import argparse
 from PIL import Image
 import docx2txt
 from pdf2image import convert_from_path
+
 def convert_image(input_path, output_path, output_format):
     try:
         img = Image.open(input_path)
@@ -38,22 +39,43 @@ def convert_pdf_to_image(input_path, output_dir):
     except Exception as e:
         print(f"Ошибка при конвертации PDF '{input_path}': {e}")
 def batch_convert(input_dir, output_dir, input_format, output_format):
+    # Создаем выходную директорию ВСЕГДА в начале, если ее нет
     if not os.path.exists(output_dir):
-        os.makedirs(output_dir) # Создаем выходную директорию, если ее нет
+        os.makedirs(output_dir)
+        print(f"Создана выходная директория: '{output_dir}'") # Добавим лог
+    elif not os.path.isdir(output_dir):
+        print(f"Ошибка: Путь для выходной директории '{output_dir}' существует, но не является директорией.")
+        return # Выходим, если output_dir не директория
+    # Проверяем существование входной директории
+    if not os.path.isdir(input_dir): # Проверяем, что это директория
+        print(f"Ошибка: Входная директория '{input_dir}' не найдена или не является директорией.")
+        return # Выходим, если input_dir не существует или не директория
+    processed_files_count = 0 # Для подсчета обработанных файлов
+    found_files_count = 0
     for filename in os.listdir(input_dir):
         if filename.endswith(f".{input_format}"):
+            found_files_count += 1
             input_path = os.path.join(input_dir, filename)
             name_without_ext = os.path.splitext(filename)[0]
             output_path = os.path.join(output_dir, f"{name_without_ext}.{output_format}")
-            try: # try-except блок перемещен внутрь цикла
+            try:
                 if input_format.lower() in ('jpg', 'png', 'jpeg', 'bmp'):
                     convert_image(input_path, output_path, output_format)
+                    processed_files_count +=1
                 elif input_format.lower() == 'txt':
-                    convert_text(input_path, output_path, output_format)
+                    convert_text(input_path, output_path, output_format) # output_format здесь может быть не нужен
+                    processed_files_count +=1
                 elif input_format.lower() == 'docx':
                     convert_docx(input_path, output_path)
+                    processed_files_count +=1
+                # Добавьте другие типы, если необходимо
             except Exception as e:
                 print(f"Ошибка при конвертации файла '{input_path}': {e}")
+    if found_files_count == 0 and os.path.exists(input_dir): # Добавил проверку существования input_dir
+        print(f"В директории '{input_dir}' не найдено файлов с расширением '.{input_format}'.")
+    elif processed_files_count > 0:
+        print(f"Пакетная конвертация завершена. Обработано файлов: {processed_files_count}.")
+    # Если input_dir не существовал, сообщение об этом уже было выведено выше
 def main():
     parser = argparse.ArgumentParser(description="Конвертер файлов")
     subparsers = parser.add_subparsers(dest='command', help='Выберите команду')
@@ -110,8 +132,8 @@ def main():
         except Exception as e:  # Перехватываем другие возможные ошибки
             print(f"Произошла ошибка: {e}")
 
-        choice = input("Выполнить еще одну операцию? (да/нет): ").lower()
-        if choice != 'да':
+        choice = input("Chose new operation? (yes/no): ").lower()
+        if choice != 'yes':
             break
 if __name__ == "__main__":
     main()
