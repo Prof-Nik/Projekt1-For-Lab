@@ -11,10 +11,6 @@ jobs:
   test:
     runs-on: ubuntu-latest # Используем последнюю версию Ubuntu
 
-    strategy:
-      matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11'] # Можно тестировать на нескольких версиях Python
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v4 # Используем последнюю версию для checkout
